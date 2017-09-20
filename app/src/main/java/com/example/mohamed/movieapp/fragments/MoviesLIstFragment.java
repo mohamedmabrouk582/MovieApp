@@ -35,7 +35,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MainViewPresenter mainViewPresenter;
     private MoviesAdapter moviesAdapter;
-    String type="top_rated";
+    String type="popular";
     private View view;
 
      public static MoviesLIstFragment newFragment(){
