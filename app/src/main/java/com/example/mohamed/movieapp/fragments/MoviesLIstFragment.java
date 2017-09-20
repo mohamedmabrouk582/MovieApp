@@ -81,8 +81,9 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
                 mainViewPresenter.loadMovieData(type);
                 return true;
             case R.id.favourite:
-                type="favourite";
-                mainViewPresenter.loadMovieData(type);
+//                type="favourite";
+//                mainViewPresenter.loadMovieData(type);
+                Toast.makeText(getActivity(), "No Develop Yet", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.top_rated:
                 type="top_rated";
