@@ -27,7 +27,7 @@ public class MainViewPresenter extends BasePresenter implements MainPresenter {
     @Override
     public void loadMovieData(String type) {
       mainView.showProgress();
-        mRequests.startRequest(type,BASE_URL,new requestsInterface() {
+        mRequests.getMovie(type,BASE_URL,new requestsInterface() {
             @Override
             public void onSucess(List movies) {
                 mainView.hideProgress();

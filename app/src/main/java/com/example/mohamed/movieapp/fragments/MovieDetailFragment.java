@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.example.mohamed.movieapp.MovieDb.DbOperations;
 import com.example.mohamed.movieapp.R;
 import com.example.mohamed.movieapp.adapter.ReviewsAdpter;
 import com.example.mohamed.movieapp.adapter.TrailerAdapter;
@@ -43,7 +44,14 @@ public class MovieDetailFragment extends Fragment implements DetailView {
     private ReviewsAdpter reviewsAdpter;
     private TrailerAdapter trailerAdapter;
     private View view;
+    private boolean flag;
     private MovieDetailViewPresenter movieDetailViewPresenter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+       setRetainInstance(true);
+    }
 
     public static MovieDetailFragment newFragment(Movie movie){
         Bundle bundle=new Bundle();
@@ -56,17 +64,25 @@ public class MovieDetailFragment extends Fragment implements DetailView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view=inflater.inflate(R.layout.movie_item_detail,container,false);
-
         movie= (Movie) getArguments().getSerializable(MOVIE);
-        initViews();
-        initTrailerRecyler();
-        initReviewRecyler();
-        movieDetailViewPresenter=new MovieDetailViewPresenter(this,new Requests(),movie);
-        Picasso.with(getActivity()).load(Uri.parse(urlbase+movie.getPosterPath())).into(moviePoster);
-        movieRatingBar.setRating(movie.getVoteCount());
+
+        if (movie!=null){
+            view=inflater.inflate(R.layout.movie_item_detail,container,false);
+            initViews();
+            initTrailerRecyler();
+            initReviewRecyler();
+            flag=DbOperations.getmOperations(getActivity()).checkFavMovie(movie.getId());
+            movieDetailViewPresenter=new MovieDetailViewPresenter(this,new Requests(getActivity()),movie);
+            Picasso.with(getActivity()).load(Uri.parse(urlbase+movie.getPosterPath())).into(moviePoster);
+            movieRatingBar.setRating(movie.getVoteCount());
+            action();
+        } else {
+            view=inflater.inflate(R.layout.no_internet,container,false);
+        }
         return view;
     }
+
+
 
     @Override
     public void onResume() {
@@ -92,12 +108,38 @@ public class MovieDetailFragment extends Fragment implements DetailView {
     }
 
     @Override
-    public void AddToFavourate(Movie movie) {
-        Toast.makeText(getActivity(), movie.getTitle()+" Added", Toast.LENGTH_SHORT).show();
+    public void AddToFavourate(final Movie movie) {
+        mAddToFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (DbOperations.getmOperations(getActivity()).InsertFavMovie(movie)) {
+                    DbOperations.getmOperations(getActivity()).deleteFromFav(String.valueOf(movie.getId()));
+                    mAddToFav.setText(" Add To Fav");
+                } else {
+                    DbOperations.getmOperations(getActivity()).InsertFavMovie(movie);
+                    mAddToFav.setText("Delete from Fav");
+                }
+            }
+        });
 
     }
 
 
+    private void action(){
+        mAddToFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (flag) {
+                    DbOperations.getmOperations(getActivity()).deleteFromFav(String.valueOf(movie.getId()));
+                    mAddToFav.setText(" Add To Fav");
+
+                } else {
+                    DbOperations.getmOperations(getActivity()).InsertFavMovie(movie);
+                    mAddToFav.setText("Delete from Fav");
+                }
+            }
+        });
+    }
 
     private void initViews(){
         moviePoster = (KenBurnsView) view.findViewById(R.id.movie_image_view);

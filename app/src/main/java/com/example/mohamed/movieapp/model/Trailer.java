@@ -11,10 +11,21 @@ public class Trailer {
     private String key;
     @SerializedName("name")
     private String name;
+    @SerializedName("id")
+    private String id;
 
-    public Trailer(String key, String name) {
+    public Trailer(String key, String name, String id) {
         this.key = key;
         this.name = name;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getKey() {

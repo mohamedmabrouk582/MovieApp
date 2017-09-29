@@ -1,5 +1,6 @@
 package com.example.mohamed.movieapp.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.example.mohamed.movieapp.R;
 import com.example.mohamed.movieapp.adapter.MoviesAdapter;
 import com.example.mohamed.movieapp.api.Requests;
+import com.example.mohamed.movieapp.api.requestsInterface;
 import com.example.mohamed.movieapp.model.Movie;
 import com.example.mohamed.movieapp.presenter.MainViewPresenter;
 import com.example.mohamed.movieapp.ui.MovieDetailActvity;
@@ -30,7 +32,7 @@ import java.util.List;
  */
 
 public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapter.MovieItemListener{
-
+    private Callbacks mCallbacks;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MainViewPresenter mainViewPresenter;
@@ -54,7 +56,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
       view=inflater.inflate(R.layout.activity_main,container,false);
-        mainViewPresenter=new MainViewPresenter(this,new Requests());
+        mainViewPresenter=new MainViewPresenter(this,new Requests(getActivity()));
         initRecyclerView();
         initSwipeRefreshLayout();
         return view;
@@ -64,7 +66,6 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     public void onResume() {
         super.onResume();
     mainViewPresenter.loadMovieData(type);
-
     }
 
     @Override
@@ -81,9 +82,8 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
                 mainViewPresenter.loadMovieData(type);
                 return true;
             case R.id.favourite:
-//                type="favourite";
-//                mainViewPresenter.loadMovieData(type);
-                Toast.makeText(getActivity(), "No Develop Yet", Toast.LENGTH_SHORT).show();
+                type="favourite";
+                mainViewPresenter.loadMovieData(type);
                 return true;
             case R.id.top_rated:
                 type="top_rated";
@@ -104,6 +104,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
         }
     }
 
+
     @Override
     public void hideProgress() {
         if (mSwipeRefreshLayout.isRefreshing()){
@@ -113,7 +114,9 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
 
     @Override
     public void showMovieClickedMessage(Movie movie) {
-        startActivity(MovieDetailActvity.newIntent(getActivity(),movie));
+        Toast.makeText(getActivity(), movie.getId()+"", Toast.LENGTH_SHORT).show();
+       // startActivity(MovieDetailActvity.newIntent(getActivity(),movie));
+        mCallbacks.onMovieSelected(movie);
     }
 
     @Override
@@ -146,4 +149,21 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
             }
         });
     }
+
+    public interface Callbacks {
+        void onMovieSelected(Movie movie);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
 }

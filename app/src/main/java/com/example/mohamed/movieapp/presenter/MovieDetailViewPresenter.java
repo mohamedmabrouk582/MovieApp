@@ -40,7 +40,7 @@ public class MovieDetailViewPresenter extends BasePresenter implements MovieDeta
             }
         });
 
-       mRequests.MovieDetail(movie.getId(), url_review, new requestsInterface() {
+       mRequests.MovieReview(movie.getId(), url_review, new requestsInterface() {
            @Override
            public void onSucess(List movies) {
                mDetailView.ShowMovieReviews(movies);
