@@ -30,6 +30,7 @@ public class MovieDb extends SQLiteOpenHelper {
                 TableMOVIE.CLOS.ID + " UNIQUE, " +
                 TableMOVIE.CLOS.POSTER + ", " +
                 TableMOVIE.CLOS.RATE + ", " +
+                TableMOVIE.CLOS.RELEASE_DATE + ", " +
                 TableMOVIE.CLOS.TITLE +
                 ")");
         /************ create  fav Movie Table ************/
@@ -39,6 +40,7 @@ public class MovieDb extends SQLiteOpenHelper {
                 TableFav.CLOS.ID + " UNIQUE, " +
                 TableFav.CLOS.POSTER + ", " +
                 TableFav.CLOS.RATE + ", " +
+                TableMOVIE.CLOS.RELEASE_DATE + ", " +
                 TableFav.CLOS.TITLE +
                 ")");
         /************ create review Movie Table ************/
@@ -62,6 +64,7 @@ public class MovieDb extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("DROP TABLE IF EXISTS" + TableMOVIE.NAME);
+        onCreate(db);
     }
 }

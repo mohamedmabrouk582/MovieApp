@@ -32,7 +32,8 @@ public class MovieWrapper extends CursorWrapper {
         String title=getString(getColumnIndex(TableMOVIE.CLOS.TITLE));
         String poster=getString(getColumnIndex(TableMOVIE.CLOS.POSTER));
         Integer rate=getInt(getColumnIndex(TableMOVIE.CLOS.RATE));
-        Movie movie =new Movie(title,poster,id,rate);
+        String release_date=getString(getColumnIndex(TableMOVIE.CLOS.RELEASE_DATE));
+        Movie movie =new Movie(title,poster,id,rate,release_date);
         return movie;
     }
 
@@ -40,7 +41,7 @@ public class MovieWrapper extends CursorWrapper {
           String author=getString(getColumnIndex(TableREVIEW.CLOS.AUTHOR));
           String content=getString(getColumnIndex(TableREVIEW.CLOS.CONTENT));
           String id=getString(getColumnIndex(TableREVIEW.CLOS.ID));
-        Review review =new Review(author,content,id);
+          Review review =new Review(author,content,id);
 
         return review;
     }

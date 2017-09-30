@@ -36,7 +36,13 @@ public class DbOperations {
 
     private DbOperations(Context context){
         mContext=context.getApplicationContext();
-        mDatabase=new MovieDb(mContext).getWritableDatabase();
+        try {
+            mDatabase=new MovieDb(mContext).getWritableDatabase();
+
+        }catch (Exception  e){
+            mDatabase=new MovieDb(mContext).getReadableDatabase();
+
+        }
     }
 
     public String Delete(String name){
@@ -107,15 +113,16 @@ public class DbOperations {
         }finally {
         wrapper.close();
         }
-return trailers;
+       return trailers;
     }
 
-     public boolean deleteFromFav(String id){
-         int delete = mDatabase.delete(TableFav.NAME, TableFav.CLOS.ID+" =?", new String[]{id});
+     public boolean deleteFromFav(int id){
+         int delete = mDatabase.delete(TableFav.NAME, TableFav.CLOS.ID+" = "+ id, null);
          return delete>0?true:false;
      }
+
     public boolean checkFavMovie(int id){
-        MovieWrapper wrapper=queryMovies(TableFav.NAME, TableFav.CLOS.ID+" =?",new String[]{String.valueOf(id)});
+        MovieWrapper wrapper=queryMovies(TableFav.NAME, TableFav.CLOS.ID+" = "+ id,null);
         try {
             if (wrapper.getCount()==0){
                 return false;
@@ -159,6 +166,7 @@ return trailers;
         values.put(TableMOVIE.CLOS.POSTER,movie.getPosterPath());
         values.put(TableMOVIE.CLOS.RATE,movie.getVoteCount());
          values.put(TableMOVIE.CLOS.TITLE,movie.getTitle());
+        values.put(TableMOVIE.CLOS.RELEASE_DATE,movie.getRelease_date());
 
         return values;
     }
@@ -173,8 +181,10 @@ return trailers;
          values.put(TableFav.CLOS.POSTER,movie.getPosterPath());
          values.put(TableFav.CLOS.RATE,movie.getVoteCount());
          values.put(TableFav.CLOS.TITLE,movie.getTitle());
+           values.put(TableFav.CLOS.RELEASE_DATE,movie.getRelease_date());
 
-        return values;
+
+           return values;
     }
 
     private MovieWrapper queryMovies(String NAME, String whereClause, String[] whereArgs) {

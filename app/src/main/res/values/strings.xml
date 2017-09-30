@@ -2,6 +2,6 @@
     <string name="app_name">Movie App</string>
     <string name="main_toast_weather_item_click">You clicked on %s</string>
     <string name="main_menu_refresh">Refresh</string>
-    <string name="add_favourite">Add To favourite</string>
+    <string name="add_favourite">Mark As favourite</string>
 
 </resources>

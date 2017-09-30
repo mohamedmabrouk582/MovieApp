@@ -105,14 +105,16 @@ public class Requests {
                 public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                     requestsInterface.onSucess(response.body().getResults());
                     for (Movie movie:response.body().getResults()) {
-                        DbOperations.getmOperations(mContext).InsertMovie(movie);
+                        try {
+                           DbOperations.getmOperations(mContext).InsertMovie(movie);
+
+                        }catch (Exception e){}
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MoviesResponse> call, Throwable t) {
                     requestsInterface.onFaile(t.getMessage());
-
                 }
             });
         }else if(type.equals("favourite")){

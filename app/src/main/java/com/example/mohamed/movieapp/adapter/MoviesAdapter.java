@@ -62,10 +62,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         return new MovieViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(MovieViewHolder holder, final int position) {
-        Picasso.with(context).load(Uri.parse(urlbase+movies.get(position).getPosterPath())).into(holder.mImageView);
+        Picasso.with(context).load(Uri.parse(urlbase+movies.get(position).getPosterPath()))
+                .placeholder(R.drawable.movie)
+                .error(R.drawable.error)
+                .into(holder.mImageView);
    }
 
     @Override

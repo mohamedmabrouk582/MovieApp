@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_margin="5dp"
+    android:layout_margin="5sp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="10sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
         <TextView
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="20sp"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Author :"
-            android:textSize="25dp"
+            android:textSize="25sp"
             />
         <TextView
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/movie_author"
-            android:textSize="20dp"
+            android:textSize="20sp"
             />
 
 
     </LinearLayout>
 
     <TextView
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20sp"
+        android:layout_marginTop="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="content :"
-        android:textSize="25dp"
+        android:textSize="25sp"
         />
 
     <TextView
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginTop="5sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/review_content"
@@ -48,8 +48,8 @@
 
 
 
-    <View android:background="#ccc"
-        android:layout_marginTop="5dp"
+    <View android:background="@color/gray"
+        android:layout_marginTop="5sp"
         android:layout_width = "match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1sp"/>
 </LinearLayout>

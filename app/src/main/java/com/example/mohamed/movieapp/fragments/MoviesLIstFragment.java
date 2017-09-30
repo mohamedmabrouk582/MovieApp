@@ -2,11 +2,13 @@ package com.example.mohamed.movieapp.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.example.mohamed.movieapp.MovieDb.DbOperations;
 import com.example.mohamed.movieapp.R;
 import com.example.mohamed.movieapp.adapter.MoviesAdapter;
 import com.example.mohamed.movieapp.api.Requests;
@@ -25,6 +28,7 @@ import com.example.mohamed.movieapp.presenter.MainViewPresenter;
 import com.example.mohamed.movieapp.ui.MovieDetailActvity;
 import com.example.mohamed.movieapp.view.MainView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,13 +37,16 @@ import java.util.List;
 
 public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapter.MovieItemListener{
     private Callbacks mCallbacks;
+    public final static String MOVIES = "movies";
+
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MainViewPresenter mainViewPresenter;
     private MoviesAdapter moviesAdapter;
     String type="popular";
+    private requestsInterface mRequestsInterface;
+    private List<Movie> mList=new ArrayList<>();
     private View view;
-
      public static MoviesLIstFragment newFragment(){
          return new MoviesLIstFragment();
      }
@@ -57,6 +64,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
       view=inflater.inflate(R.layout.activity_main,container,false);
         mainViewPresenter=new MainViewPresenter(this,new Requests(getActivity()));
+
         initRecyclerView();
         initSwipeRefreshLayout();
         return view;
@@ -74,6 +82,17 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
         inflater.inflate(R.menu.menu,menu);
     }
 
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // You can change this divider to adjust the size of the poster
+        int widthDivider =300;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -83,6 +102,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
                 return true;
             case R.id.favourite:
                 type="favourite";
+                 mSwipeRefreshLayout.setRefreshing(false);
                 mainViewPresenter.loadMovieData(type);
                 return true;
             case R.id.top_rated:
@@ -114,19 +134,20 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
 
     @Override
     public void showMovieClickedMessage(Movie movie) {
-        Toast.makeText(getActivity(), movie.getId()+"", Toast.LENGTH_SHORT).show();
-       // startActivity(MovieDetailActvity.newIntent(getActivity(),movie));
         mCallbacks.onMovieSelected(movie);
     }
 
     @Override
     public void showMovies(List<Movie> movies) {
         moviesAdapter.replaceData(movies);
+        mList=movies;
     }
 
     @Override
     public void showConnectionError() {
         Toast.makeText(getActivity(), "Error at Connection", Toast.LENGTH_SHORT).show();
+        mRequestsInterface.onSucess(DbOperations.getmOperations(getActivity()).getMovies());
+
     }
 
     @Override
@@ -136,7 +157,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     void initRecyclerView(){
         moviesAdapter=new MoviesAdapter(R.layout.movie_item,getActivity(),this);
         mRecyclerView= (RecyclerView) view.findViewById(R.id.movies_recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),numberOfColumns()));
         mRecyclerView.setAdapter(moviesAdapter);
     }
 
@@ -165,5 +186,6 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
         super.onDetach();
         mCallbacks = null;
     }
+
 
 }
