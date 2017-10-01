@@ -1,8 +1,11 @@
 package com.example.mohamed.movieapp.ui;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.Display;
+import android.widget.Toast;
 
 import com.example.mohamed.movieapp.MovieDb.DbOperations;
 import com.example.mohamed.movieapp.R;
@@ -18,6 +21,17 @@ public class MovieListActivity extends SingleFragmentActivity  implements Movies
 
     @Override
     protected int getLayoutResId() {
+//        Display display = getWindowManager().getDefaultDisplay();
+//        Point size = new Point();
+//        display.getSize(size);
+//        int width = size.x;
+//        int height = size.y;
+//        if (width>600){
+//            return R.layout.activity_twopane;
+//        }else {
+//           return R.layout.container_view;
+//        }
+
         return R.layout.activity_masterdetail;
     }
     @Override

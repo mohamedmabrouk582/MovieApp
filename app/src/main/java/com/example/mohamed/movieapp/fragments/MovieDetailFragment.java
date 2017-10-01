@@ -58,6 +58,11 @@ public class MovieDetailFragment extends Fragment implements DetailView {
        setRetainInstance(true);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
     public static MovieDetailFragment newFragment(Movie movie){
         Bundle bundle=new Bundle();
         bundle.putSerializable(MOVIE,movie);
@@ -140,7 +145,7 @@ public class MovieDetailFragment extends Fragment implements DetailView {
         mAddToFav= (Button) view.findViewById(R.id.add_to_favourite);
         release_date= (TextView) view.findViewById(R.id.release_date);
         title= (TextView) view.findViewById(R.id.movie_title);
-        release_date.setText(movie.getRelease_date());
+        release_date.setText(movie.getRelease_date().substring(0,4));
         title.setText(movie.getTitle());
         movieRatingBar.setRating(movie.getVoteCount()/2);
     }

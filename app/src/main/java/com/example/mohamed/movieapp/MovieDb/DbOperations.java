@@ -135,8 +135,14 @@ public class DbOperations {
     }
 
     public String InsertMovie(Movie movie){
-        ContentValues values=getMovie(movie);
-       Long aLong= mDatabase.insert(TableMOVIE.NAME,null,values);
+        Long aLong=null;
+        try {
+            ContentValues values=getMovie(movie);
+           aLong= mDatabase.insert(TableMOVIE.NAME,null,values);
+
+        }catch (Exception e){
+        }
+
         return  aLong>0?"insert done ":" error ";
     }
 
