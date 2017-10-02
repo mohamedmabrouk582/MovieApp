@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.MovieListActivity"
-            android:configChanges="orientation|screenSize|navigation"
 
             >
             <intent-filter>
