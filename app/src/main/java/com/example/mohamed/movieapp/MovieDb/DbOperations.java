@@ -4,7 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
+import com.example.mohamed.movieapp.ContantProvider.MoviesProvider;
 import com.example.mohamed.movieapp.DBshema.DbShema;
 import com.example.mohamed.movieapp.DBshema.DbShema.TableFav;
 import com.example.mohamed.movieapp.DBshema.DbShema.TableMOVIE;
@@ -116,38 +120,38 @@ public class DbOperations {
        return trailers;
     }
 
-     public boolean deleteFromFav(int id){
-         int delete = mDatabase.delete(TableFav.NAME, TableFav.CLOS.ID+" = "+ id, null);
-         return delete>0?true:false;
+     public void deleteFromFav(int id){
+         mContext.getContentResolver().delete(MoviesProvider.CONTENT_URI,TableFav.CLOS.ID+" = "+ id,null);
      }
+    public void deleteMovie(){
+        mDatabase.delete(TableMOVIE.NAME,null, null);
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public boolean checkFavMovie(int id){
-        MovieWrapper wrapper=queryMovies(TableFav.NAME, TableFav.CLOS.ID+" = "+ id,null);
+        Cursor cursor=mContext.getContentResolver().query(MoviesProvider.CONTENT_URI,null,TableFav.CLOS.ID+" = "+ id,null,null);
+
         try {
-            if (wrapper.getCount()==0){
+            if (cursor.getCount()==0){
                 return false;
             }
-            wrapper.moveToFirst();
+            cursor.moveToFirst();
             return true;
         }finally {
-            wrapper.close();
+            cursor.close();
         }
     }
 
-    public String InsertMovie(Movie movie){
-        Long aLong=null;
-        try {
-            ContentValues values=getMovie(movie);
-           aLong= mDatabase.insert(TableMOVIE.NAME,null,values);
-
-        }catch (Exception e){
-        }
-
-        return  aLong>0?"insert done ":" error ";
+    public String InsertMovie(Movie movie) throws Exception{
+          ContentValues values=getMovie(movie);
+          Long aLong= mDatabase.insert(TableMOVIE.NAME,null,values);
+           return  aLong>0?"insert done ":" error ";
     }
 
 
-    public String InsertMovieReview(Review review,String id){
+
+
+    public String InsertMovieReview(Review review,String id) throws Exception{
         ContentValues values=getMoviereview(review,id);
        Long aLong= mDatabase.insert(TableREVIEW.NAME,null,values);
         return  aLong>0?"insert done review ":" error ";
@@ -158,11 +162,11 @@ public class DbOperations {
         return  aLong>0?"insert done review ":" error ";
     }
 
-    public boolean InsertFavMovie(Movie movie){
+    public void InsertFavMovie(Movie movie){
         ContentValues values=getMovieFav(movie);
-        long insert = mDatabase.insert(TableFav.NAME, null, values);
-
-     return insert>0?true:false;
+       // long insert = mDatabase.insert(TableFav.NAME, null, values);
+         mContext.getContentResolver().insert(MoviesProvider.CONTENT_URI,values);
+    // return insert>0?true:false;
     }
 
     private ContentValues getMovie(Movie movie){
@@ -172,7 +176,7 @@ public class DbOperations {
         values.put(TableMOVIE.CLOS.POSTER,movie.getPosterPath());
         values.put(TableMOVIE.CLOS.RATE,movie.getVoteCount());
          values.put(TableMOVIE.CLOS.TITLE,movie.getTitle());
-        values.put(TableMOVIE.CLOS.RELEASE_DATE,movie.getRelease_date());
+        values.put(TableMOVIE.CLOS.RELEASE_DATE,movie.getRelease_date().substring(0,4));
 
         return values;
     }
@@ -187,7 +191,7 @@ public class DbOperations {
          values.put(TableFav.CLOS.POSTER,movie.getPosterPath());
          values.put(TableFav.CLOS.RATE,movie.getVoteCount());
          values.put(TableFav.CLOS.TITLE,movie.getTitle());
-           values.put(TableFav.CLOS.RELEASE_DATE,movie.getRelease_date());
+           values.put(TableFav.CLOS.RELEASE_DATE,movie.getRelease_date().substring(0,4));
 
 
            return values;
@@ -203,6 +207,8 @@ public class DbOperations {
                 null, // having
                 null // orderBy
         );
+
+
         return new MovieWrapper(cursor);
     }
     private ContentValues getMoviereview( Review review,String movieId){

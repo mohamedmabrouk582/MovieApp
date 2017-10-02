@@ -13,8 +13,7 @@ public class DbShema {
             public static String POSTER="poster";
             public static String TITLE="title";
             public static String RATE="rate";
-            public static String RELEASE_DATE="release_date";
-
+            public static String RELEASE_DATE="release";
 
         }
     }
@@ -25,7 +24,7 @@ public class DbShema {
             public static String POSTER="poster";
             public static String TITLE="title";
             public static String RATE="rate";
-            public static String RELEASE_DATE="release_date";
+            public static String RELEASE_DATE="release";
 
         }
     }

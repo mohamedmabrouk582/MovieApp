@@ -58,14 +58,11 @@ public class MovieDetailFragment extends Fragment implements DetailView {
        setRetainInstance(true);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+
 
     public static MovieDetailFragment newFragment(Movie movie){
         Bundle bundle=new Bundle();
-        bundle.putSerializable(MOVIE,movie);
+        bundle.putParcelable(MOVIE,movie);
         MovieDetailFragment fragment=new MovieDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -74,7 +71,7 @@ public class MovieDetailFragment extends Fragment implements DetailView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        movie= (Movie) getArguments().getSerializable(MOVIE);
+        movie= (Movie) getArguments().getParcelable(MOVIE);
          flag= DbOperations.getmOperations(getActivity()).checkFavMovie(movie.getId());
             view=inflater.inflate(R.layout.movie_item_detail,container,false);
             initViews();
@@ -145,7 +142,7 @@ public class MovieDetailFragment extends Fragment implements DetailView {
         mAddToFav= (Button) view.findViewById(R.id.add_to_favourite);
         release_date= (TextView) view.findViewById(R.id.release_date);
         title= (TextView) view.findViewById(R.id.movie_title);
-        release_date.setText(movie.getRelease_date().substring(0,4));
+        release_date.setText(movie.getRelease_date());
         title.setText(movie.getTitle());
         movieRatingBar.setRating(movie.getVoteCount()/2);
     }

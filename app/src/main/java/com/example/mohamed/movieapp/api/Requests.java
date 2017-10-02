@@ -43,7 +43,12 @@ public class Requests {
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
                 requestsInterface.onSucess(response.body().getResults());
                 for (Review review:response.body().getResults()) {
-                  DbOperations.getmOperations(mContext).InsertMovieReview(review, String.valueOf(id));
+
+                    try {
+                        DbOperations.getmOperations(mContext).InsertMovieReview(review, String.valueOf(id));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -53,7 +58,6 @@ public class Requests {
             }
         });
         }else {
-            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
             requestsInterface.onSucess(DbOperations.getmOperations(mContext).getReview(String.valueOf(id)));
         }
     }
@@ -77,7 +81,6 @@ public class Requests {
                 }
             });
         }else {
-            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
             requestsInterface.onSucess(DbOperations.getmOperations(mContext).getTrailer(String.valueOf(id)));
         }
     }
@@ -104,10 +107,10 @@ public class Requests {
                 @Override
                 public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                     requestsInterface.onSucess(response.body().getResults());
+
                     for (Movie movie:response.body().getResults()) {
                         try {
-                           DbOperations.getmOperations(mContext).InsertMovie(movie);
-
+                        DbOperations.getmOperations(mContext).InsertMovie(movie);
                         }catch (Exception e){}
                     }
                 }
@@ -122,7 +125,6 @@ public class Requests {
             requestsInterface.onSucess(DbOperations.getmOperations(mContext).getFavMovies());
         }
         else {
-            Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
             requestsInterface.onSucess(DbOperations.getmOperations(mContext).getMovies());
         }
     }

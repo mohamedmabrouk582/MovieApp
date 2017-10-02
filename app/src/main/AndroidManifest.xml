@@ -6,13 +6,17 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
+        android:name=".Application.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/movie"
         android:label="@string/app_name"
         android:roundIcon="@drawable/movie"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MovieListActivity">
+        <activity android:name=".ui.MovieListActivity"
+            android:configChanges="orientation|screenSize|navigation"
+
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,12 +24,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.MovieDetailActvity"
+            android:configChanges="orientation|screenSize|navigation"
             android:parentActivityName=".ui.MovieListActivity"
             />
         <provider
-            android:name=".ContantProvider.MovieProvider"
-            android:authorities="com.example.mohamed.movieapp.ContantProvider.MovieProvider"
+            android:name=".ContantProvider.MoviesProvider"
+            android:authorities="com.example.mohamed.movieapp.ContantProvider.contentprovider"
             android:exported="true"
+            android:readPermission="true" android:writePermission="true"
             android:multiprocess="true" />
     </application>
 

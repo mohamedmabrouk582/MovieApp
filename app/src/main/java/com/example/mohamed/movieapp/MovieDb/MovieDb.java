@@ -40,7 +40,7 @@ public class MovieDb extends SQLiteOpenHelper {
                 TableFav.CLOS.ID + " UNIQUE, " +
                 TableFav.CLOS.POSTER + ", " +
                 TableFav.CLOS.RATE + ", " +
-                TableMOVIE.CLOS.RELEASE_DATE + ", " +
+                TableFav.CLOS.RELEASE_DATE + ", " +
                 TableFav.CLOS.TITLE +
                 ")");
         /************ create review Movie Table ************/

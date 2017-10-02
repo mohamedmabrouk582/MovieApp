@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.example.mohamed.movieapp.Application.MyApp;
+import com.example.mohamed.movieapp.ContantProvider.DataManager;
 import com.example.mohamed.movieapp.MovieDb.DbOperations;
 import com.example.mohamed.movieapp.R;
 import com.example.mohamed.movieapp.adapter.MoviesAdapter;
@@ -28,6 +30,7 @@ import com.example.mohamed.movieapp.presenter.MainViewPresenter;
 import com.example.mohamed.movieapp.ui.MovieDetailActvity;
 import com.example.mohamed.movieapp.view.MainView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,42 +41,49 @@ import java.util.List;
 public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapter.MovieItemListener{
     private Callbacks mCallbacks;
     public final static String MOVIES = "movies";
-
+    private Bundle saveBundle;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MainViewPresenter mainViewPresenter;
     private MoviesAdapter moviesAdapter;
-    String type="popular";
+    String type="top_rated";
     private requestsInterface mRequestsInterface;
     private List<Movie> mList=new ArrayList<>();
     private View view;
+    private DataManager dataManager;
      public static MoviesLIstFragment newFragment(){
+
          return new MoviesLIstFragment();
      }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-      view=inflater.inflate(R.layout.activity_main,container,false);
-        mainViewPresenter=new MainViewPresenter(this,new Requests(getActivity()));
-
-        initRecyclerView();
-        initSwipeRefreshLayout();
+             saveBundle=savedInstanceState;
+            view = inflater.inflate(R.layout.activity_main, container, false);
+            mainViewPresenter = new MainViewPresenter(this, new Requests(getActivity()));
+            saveBundle = savedInstanceState;
+            dataManager=((MyApp) getActivity().getApplication()).getDataManager();
+            initRecyclerView();
+            initSwipeRefreshLayout();
+            type=dataManager.getType();
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-    mainViewPresenter.loadMovieData(type);
+        type=dataManager.getType();
+        DbOperations.getmOperations(getActivity()).deleteMovie();
+        mainViewPresenter.loadMovieData(type);
     }
 
     @Override
@@ -86,7 +96,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         // You can change this divider to adjust the size of the poster
-        int widthDivider =300;
+        int widthDivider =400;
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
         if (nColumns < 2) return 2;
@@ -98,15 +108,21 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
         switch (item.getItemId()){
             case R.id.popular:
                 type="popular";
+                dataManager.clear();
+                dataManager.savetype(type);
                 mainViewPresenter.loadMovieData(type);
                 return true;
             case R.id.favourite:
                 type="favourite";
-                 mSwipeRefreshLayout.setRefreshing(false);
+                dataManager.clear();
+                dataManager.savetype(type);
+                mSwipeRefreshLayout.setRefreshing(false);
                 mainViewPresenter.loadMovieData(type);
                 return true;
             case R.id.top_rated:
                 type="top_rated";
+                dataManager.clear();
+                dataManager.savetype(type);
                 mainViewPresenter.loadMovieData(type);
                 return true;
         }
@@ -139,8 +155,11 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
 
     @Override
     public void showMovies(List<Movie> movies) {
-        moviesAdapter.replaceData(movies);
+        if (saveBundle!=null){
+            mList=saveBundle.getParcelableArrayList(MOVIES);
+        }
         mList=movies;
+        moviesAdapter.replaceData(mList);
     }
 
     @Override
@@ -185,6 +204,13 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(MOVIES, (ArrayList<? extends Parcelable>) mList);
+        super.onSaveInstanceState(outState);
+
     }
 
 
