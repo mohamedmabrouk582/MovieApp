@@ -14,7 +14,13 @@ public class DataManager {
     public void clear() {
         mSharedPrefsHelper.Clear();
     }
+    public void SavePostion(int postion){
+        mSharedPrefsHelper.PutPostion(postion);
+    }
 
+    public int getPstion(){
+        return mSharedPrefsHelper.getPstion();
+    }
     public void savetype(String type) {
         mSharedPrefsHelper.PutType(type);
     }

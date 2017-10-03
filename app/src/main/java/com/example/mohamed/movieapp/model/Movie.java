@@ -22,13 +22,16 @@ public class Movie  implements Serializable, Parcelable {
     private float voteCount;
     @SerializedName("release_date")
     private String release_date;
+    @SerializedName("overview")
+    private String overview;
 
-    public Movie(String title, String posterPath, Integer id, float voteCount, String release_date) {
+    public Movie(String title, String posterPath, Integer id, float voteCount, String release_date,String overview) {
         this.title = title;
         this.posterPath = posterPath;
         this.id = id;
         this.voteCount = voteCount;
         this.release_date = release_date.substring(0,4);
+        this.overview=overview;
     }
     protected Movie(Parcel in) {
         title = in.readString();
@@ -36,6 +39,7 @@ public class Movie  implements Serializable, Parcelable {
         id = in.readInt();
         voteCount = in.readFloat();
         release_date = in.readString();
+        overview=in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -90,6 +94,13 @@ public class Movie  implements Serializable, Parcelable {
         this.voteCount = voteCount;
     }
 
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
 
     @Override
     public int describeContents() {
@@ -103,6 +114,7 @@ public class Movie  implements Serializable, Parcelable {
         dest.writeInt(id);
         dest.writeFloat(voteCount);
         dest.writeString(release_date);
+        dest.writeString(overview);
 
     }
 }

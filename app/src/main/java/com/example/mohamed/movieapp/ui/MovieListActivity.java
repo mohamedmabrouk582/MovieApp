@@ -42,9 +42,17 @@ public class MovieListActivity extends SingleFragmentActivity  implements Movies
         super.onResume();
 
         if (findViewById(R.id.detail_fragment_container)!=null) {
-            onMovieSelected( DbOperations.getmOperations(this).getMovies().get(0));
+
+            try{
+                onMovieSelected( DbOperations.getmOperations(this).getMovies().get(0));
+
+            }catch (Exception e){
+
+            }
         }
     }
+
+
 
     @Override
     public Fragment CreateFragment() {

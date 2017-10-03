@@ -1,8 +1,10 @@
 package com.example.mohamed.movieapp.fragments;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +42,7 @@ public class MovieDetailFragment extends Fragment implements DetailView {
     private RecyclerView mTarilerRecyclerView;
     private RecyclerView mReviewsRecyclerView;
     private KenBurnsView moviePoster;
+    private TextView overview;
     private RatingBar movieRatingBar;
     private TextView release_date;
     private static String MOVIE="MOVIE";
@@ -68,6 +71,7 @@ public class MovieDetailFragment extends Fragment implements DetailView {
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -142,8 +146,10 @@ public class MovieDetailFragment extends Fragment implements DetailView {
         mAddToFav= (Button) view.findViewById(R.id.add_to_favourite);
         release_date= (TextView) view.findViewById(R.id.release_date);
         title= (TextView) view.findViewById(R.id.movie_title);
+        overview= (TextView) view.findViewById(R.id.overview);
         release_date.setText(movie.getRelease_date());
         title.setText(movie.getTitle());
+        overview.setText(movie.getOverview());
         movieRatingBar.setRating(movie.getVoteCount()/2);
     }
     private void initTrailerRecyler(){

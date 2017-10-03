@@ -39,6 +39,7 @@ import java.util.List;
  */
 
 public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapter.MovieItemListener{
+    private static final String LIST_STATE_KEY ="rotate" ;
     private Callbacks mCallbacks;
     public final static String MOVIES = "movies";
     private Bundle saveBundle;
@@ -51,7 +52,11 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     private List<Movie> mList=new ArrayList<>();
     private View view;
     private DataManager dataManager;
-     public static MoviesLIstFragment newFragment(){
+    public static int lastFirstVisiblePosition=5;
+    private GridLayoutManager mLayoutManager=new GridLayoutManager(getActivity(),numberOfColumns());
+    private Parcelable mListState;
+
+    public static MoviesLIstFragment newFragment(){
 
          return new MoviesLIstFragment();
      }
@@ -67,7 +72,6 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-             saveBundle=savedInstanceState;
             view = inflater.inflate(R.layout.activity_main, container, false);
             mainViewPresenter = new MainViewPresenter(this, new Requests(getActivity()));
             saveBundle = savedInstanceState;
@@ -82,9 +86,24 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     public void onResume() {
         super.onResume();
         type=dataManager.getType();
-        DbOperations.getmOperations(getActivity()).deleteMovie();
+//        ((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPosition((int) currentVisiblePosition);
+//        currentVisiblePosition = 0;
+       // DbOperations.getmOperations(getActivity()).deleteMovie();
+        //((GridLayoutManager) mRecyclerView.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
+        }
         mainViewPresenter.loadMovieData(type);
     }
+
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        lastFirstVisiblePosition = ((GridLayoutManager)mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+//        Toast.makeText(getActivity(), lastFirstVisiblePosition+"", Toast.LENGTH_SHORT).show();
+//        //  currentVisiblePosition = ((GridLayoutManager)mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+//
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -94,8 +113,6 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
 
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        // You can change this divider to adjust the size of the poster
         int widthDivider =400;
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
@@ -176,7 +193,7 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     void initRecyclerView(){
         moviesAdapter=new MoviesAdapter(R.layout.movie_item,getActivity(),this);
         mRecyclerView= (RecyclerView) view.findViewById(R.id.movies_recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),numberOfColumns()));
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(moviesAdapter);
     }
 
@@ -207,10 +224,19 @@ public class MoviesLIstFragment extends Fragment implements MainView,MoviesAdapt
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(MOVIES, (ArrayList<? extends Parcelable>) mList);
-        super.onSaveInstanceState(outState);
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
 
+        // Save list state
+        mListState = mLayoutManager.onSaveInstanceState();
+        state.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null)
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
     }
 
 

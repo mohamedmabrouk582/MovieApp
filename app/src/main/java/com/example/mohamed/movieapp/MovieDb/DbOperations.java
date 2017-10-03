@@ -171,7 +171,7 @@ public class DbOperations {
 
     private ContentValues getMovie(Movie movie){
         ContentValues values=new ContentValues();
-
+        values.put(TableMOVIE.CLOS.OVERVIEW,movie.getOverview());
         values.put(TableMOVIE.CLOS.ID,movie.getId());
         values.put(TableMOVIE.CLOS.POSTER,movie.getPosterPath());
         values.put(TableMOVIE.CLOS.RATE,movie.getVoteCount());
@@ -185,8 +185,8 @@ public class DbOperations {
 
 
        private ContentValues getMovieFav(Movie movie){
-        ContentValues values=new ContentValues();
-
+          ContentValues values=new ContentValues();
+           values.put(TableFav.CLOS.OVERVIEW,movie.getOverview());
          values.put(TableFav.CLOS.ID,movie.getId());
          values.put(TableFav.CLOS.POSTER,movie.getPosterPath());
          values.put(TableFav.CLOS.RATE,movie.getVoteCount());

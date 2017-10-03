@@ -33,8 +33,8 @@ public class MovieWrapper extends CursorWrapper {
         String poster=getString(getColumnIndex(TableMOVIE.CLOS.POSTER));
         Integer rate=getInt(getColumnIndex(TableMOVIE.CLOS.RATE));
         String release_date=getString(getColumnIndex(TableMOVIE.CLOS.RELEASE_DATE));
-        Movie movie =new Movie(title,poster,id,rate,release_date);
-       // movie.setRelease_date(release_date);
+        String overview=getString(getColumnIndex(TableMOVIE.CLOS.OVERVIEW));
+        Movie movie =new Movie(title,poster,id,rate,release_date,overview);
         return movie;
     }
 

@@ -14,6 +14,7 @@ public class DbShema {
             public static String TITLE="title";
             public static String RATE="rate";
             public static String RELEASE_DATE="release";
+            public static String OVERVIEW="overview";
 
         }
     }
@@ -25,6 +26,7 @@ public class DbShema {
             public static String TITLE="title";
             public static String RATE="rate";
             public static String RELEASE_DATE="release";
+            public static String OVERVIEW="overview";
 
         }
     }
